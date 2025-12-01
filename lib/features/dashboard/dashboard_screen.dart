@@ -10,7 +10,7 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<HealthRecordsProvider>(context);
+    final provider = context.watch<HealthRecordsProvider>();
 
     // Filter todays records
     final today = DateTime.now();
@@ -45,9 +45,9 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // Summary Cards
-                  _buildCard("Water Intake", "$totalWater ml", Colors.blue),
-                  _buildCard("Steps", "$totalSteps steps", Colors.green),
-                  _buildCard("Calories", "$totalCalories kcal", Colors.red),
+                  _buildCard("Water Intake", "$totalWater ml", Colors.blue, Icons.water_drop),
+                  _buildCard("Steps", "$totalSteps steps", Colors.green, Icons.directions_walk),
+                  _buildCard("Calories", "$totalCalories kcal", Colors.red, Icons.local_fire_department),
 
                   const Spacer(),
 
@@ -87,7 +87,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(String title, String value, Color color) {
+  Widget _buildCard(String title, String value, Color color, IconData icon) {
     return Card(
       elevation: 2,
       color: const Color(0xFF2D2D2D),
@@ -95,11 +95,18 @@ class DashboardScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+            Icon(
+              icon,
+              color: color,
+              size: 32,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+              ),
             ),
             Text(
               value,

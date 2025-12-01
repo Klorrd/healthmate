@@ -17,7 +17,7 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<HealthRecordsProvider>(context);
+    final provider = context.watch<HealthRecordsProvider>();
     final records = provider.records;
 
     return Scaffold(
@@ -48,7 +48,8 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_dateController.text.trim().isEmpty) return;
-                    provider.searchByDate(_dateController.text.trim());
+                    // Using context.read for method calls in callbacks
+                    context.read<HealthRecordsProvider>().searchByDate(_dateController.text.trim());
                   },
                   child: const Text("Search"),
                 ),
@@ -58,7 +59,8 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
                 OutlinedButton(
                   onPressed: () {
                     _dateController.clear();
-                    provider.loadAll(); // Reset list
+                    // Using context.read for method calls in callbacks
+                    context.read<HealthRecordsProvider>().loadAll();
                   },
                   child: const Text("Reset"),
                 ),
@@ -80,7 +82,7 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
                     itemCount: records.length,
                     itemBuilder: (context, index) {
                       final record = records[index];
-                      return _buildRecordItem(context, record, provider);
+                      return _buildRecordItem(context, record);
                     },
                   ),
           ),
@@ -103,12 +105,9 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
       final selected = _formatDate(picked);
       _dateController.text = selected;
 
-      // Optional: auto-search immediately after picking date
-      final provider = Provider.of<HealthRecordsProvider>(
-        context,
-        listen: false,
-      );
-      provider.searchByDate(selected);
+      // Auto-search immediately after picking date
+      // Using context.read for method calls in callbacks (no rebuild needed)
+      context.read<HealthRecordsProvider>().searchByDate(selected);
     }
   }
 
@@ -123,7 +122,6 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
   Widget _buildRecordItem(
     BuildContext context,
     HealthRecord record,
-    HealthRecordsProvider provider,
   ) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -163,7 +161,8 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () async {
-                await provider.deleteRecord(record.id!);
+                // Using context.read for method calls in callbacks
+                await context.read<HealthRecordsProvider>().deleteRecord(record.id!);
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(const SnackBar(content: Text("Record deleted")));

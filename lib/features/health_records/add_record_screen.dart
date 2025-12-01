@@ -22,7 +22,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   @override
   void initState() {
     super.initState();
-    _dateController.text = _formatDate(DateTime.now()); // default today
+    _dateController.text = _formatDate(DateTime.now()); // Default is today
   }
 
   // Format a DateTime to yyyy-MM-dd
@@ -32,7 +32,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         "${d.day.toString().padLeft(2, '0')}";
   }
 
-  // DATE PICKER
+  // Date Picker
   Future<void> _pickDate(BuildContext context) async {
     final initialDate = DateTime.now();
     final firstDate = DateTime(2000);
@@ -52,8 +52,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<HealthRecordsProvider>(context);
-
     return Scaffold(
       appBar: AppBar(title: const Text("Add Health Record")),
 
@@ -123,7 +121,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                         water: int.parse(_waterController.text.trim()),
                       );
 
-                      await provider.addRecord(newRecord);
+                      await context.read<HealthRecordsProvider>().addRecord(newRecord);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

@@ -61,8 +61,6 @@ class _EditRecordScreenState extends State<EditRecordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<HealthRecordsProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Health Record"),
@@ -135,7 +133,7 @@ class _EditRecordScreenState extends State<EditRecordScreen> {
                         water: int.parse(_waterController.text.trim()),
                       );
 
-                      await provider.updateRecord(updated);
+                      await context.read<HealthRecordsProvider>().updateRecord(updated);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
