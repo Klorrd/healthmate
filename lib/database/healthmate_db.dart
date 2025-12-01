@@ -44,19 +44,19 @@ class HealthmateDatabase {
   Future<void> _insertDummyData(Database db) async {
     final List<HealthRecord> dummyRecords = [
       HealthRecord(
-        date: '2024-11-15',
+        date: '2025-11-15',
         steps: 5000,
         calories: 300,
         water: 1500,
       ),
       HealthRecord(
-        date: '2024-11-19',
+        date: '2025-11-19',
         steps: 8000,
         calories: 450,
         water: 2000,
       ),
       HealthRecord(
-        date: '2024-11-25',
+        date: '2025-11-25',
         steps: 2500,
         calories: 180,
         water: 1000,
