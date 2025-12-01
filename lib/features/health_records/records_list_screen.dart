@@ -118,6 +118,37 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
         "${d.day.toString().padLeft(2, '0')}";
   }
 
+  // Show delete confirmation modal
+  Future<void> _showDeleteConfirmation(BuildContext context, HealthRecord record) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Record"),
+        content: Text(
+          "Are you sure you want to delete the record for ${record.date}?\n\nThis action cannot be undone.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await context.read<HealthRecordsProvider>().deleteRecord(record.id!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Record deleted")),
+      );
+    }
+  }
+
   // Record item UI is below
   Widget _buildRecordItem(
     BuildContext context,
@@ -160,13 +191,7 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
 
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () async {
-                // Using context.read for method calls in callbacks
-                await context.read<HealthRecordsProvider>().deleteRecord(record.id!);
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text("Record deleted")));
-              },
+              onPressed: () => _showDeleteConfirmation(context, record),
             ),
           ],
         ),
